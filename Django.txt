@@ -1,0 +1,76 @@
+To create a virtual env:
+python -m venv XXX
+
+where XXX is the name of virtual environment
+---
+
+to active vitual environment:
+XXX\Scripts\activate
+
+---
+to start a project in django:
+django-admin.exe startproject mysite .
+
+---
+to start an application in django:
+python manage.py startapp blog
+
+** here we've created an application with name blog
+
+---
+After creating an application, we have to add it to the setting file under INSTALLED_APPS list
+---
+
+after creating an application, we must create a model which is in the folder of application (here it is blog)
+
+---
+in the models we write a code which is based on application content. Here, we have a blog and want to create a model which takes properties like:
+author, title, text, created_date and publish_date. In a model we have to specify the type of each properties. All types inside the django
+model end with Field. For example: CharField or TextField. after defining properties types, we have to define methods. Methods often return something.
+So, in order to define a method we use function. Here is an example of a model:
+
+from django.db import models
+from django.utils import timezone
+
+
+class Post(models.Model):
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+    created_date = models.DateTimeField(
+            default=timezone.now)
+    published_date = models.DateTimeField(
+            blank=True, null=True)
+
+    def publish(self):
+        self.published_date = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return self.title
+---
+***everything that ends with Field is fieldtype
+---
+
+After creating model, we have to prepare it for transfer to the database:
+python manage.py makemigrations blog
+
+---
+After preparing, we can move it to the database:
+python manage.py migrate blog
+
+---
+after creating the model, we need to register it to make it visible for user. We can register it from the admin file which is in the the application folder.
+here is an example:
+
+from django.contrib import admin
+from .models import Post
+
+admin.site.register(Post)
+
+here we've created Post (as a model) and inport it here then register it by above code.
+---
+
+if we want to see the result the we have to run server by:
+python manage.py runserver
+---
